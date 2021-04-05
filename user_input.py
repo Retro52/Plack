@@ -1,12 +1,10 @@
 import time
 from datetime import time as ch_time
+import datetime
 import schedule
-import telebot
 from telebot import types
 
-import config
-
-bot = telebot.TeleBot(config.TOKEN)
+from config import *
 
 
 def error(message, function):
@@ -14,8 +12,12 @@ def error(message, function):
     bot.register_next_step_handler(message, function)
 
 
-def bot_send(message, name):
-    bot.send_message(message.chat.id, f"{name}", parse_mode='html')
+def bot_send(message, name, day=None):
+    if day is not None:
+        if day == datetime.datetime.now().date():
+            bot.send_message(message.chat.id, f"{name}", parse_mode='html')
+    else:
+        bot.send_message(message.chat.id, f"{name}", parse_mode='html')
 
 
 def default_markup():
