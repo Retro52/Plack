@@ -1,5 +1,4 @@
-id_client,name_event,start_time,end_time,re,delta_time
-559325489,Sleeping,18:40,09:15,True,
-559325489,Breakfast,08:50,,True,
-559325489,Lunch,14:55,,True,
-559325489,Diner,20:15,,True,
+id_client,name_event,event_day,start_time,end_time,re
+759785139,Breakfast,,07:59,,True
+759785139,Lunch,,08:00,,True
+759785139,Diner,,08:01,,True

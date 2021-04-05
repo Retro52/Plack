@@ -41,7 +41,7 @@ def main_menu(message):
         elif message.text == 'My schedule':
             sch.my_schedule(message)
         elif message.text == "My stats":
-            Scheme.data_analysis(message)
+            Scheme.schedule_date(message)
         elif message.text == 'debug_clear_csv':
             filename = "Schedule/data.csv"
             f = open(filename, "w+")
