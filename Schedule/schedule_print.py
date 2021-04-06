@@ -1,50 +1,38 @@
-import os
+import collections
 
 import pandas as pd
-import telebot
 
-import config
-
-bot = telebot.TeleBot(config.TOKEN)
+from Schedule.data import *
+from config import *
 
 
 def my_schedule(message):
-    if os.stat("data.csv").st_size != 0:
-        df = pd.read_csv("data.csv")
-        data_id = df.query(f"id_client == {message.chat.id}")
-        d_re = {}
-        d_no_re = {}
-        nl = "\n"
-        for i in range(len(data_id)):
-            if type(data_id["end_time"][i]) != str:
-                if data_id["re"][i]:
-                    d_re[f"{data_id['name_event'][i].replace('_', ' ')}: {data_id['start_time'][i]}"] = \
-                        int(data_id["start_time"][i].split(":")[0]) + (
-                                int(data_id["start_time"][i].split(":")[1]) / 100)
-                else:
-                    d_no_re[f"{data_id['name_event'][i].replace('_', ' ')}: {data_id['start_time'][i]}"] = \
-                        int(data_id["start_time"][i].split(":")[0]) + (
-                                int(data_id["start_time"][i].split(":")[1]) / 100)
-            else:
-                if data_id["re"][i]:
-                    d_re[(f'{data_id["name_event"][i].replace("_", " ")}: '
-                          f'{data_id["start_time"][i]} - {data_id["end_time"][i]}')] = \
-                        int(str(data_id["start_time"][i]).split(":")[0]) + (
-                                int(str(data_id["start_time"][i]).split(":")[1]) / 100)
-                else:
-                    d_no_re[(
-                        f'{data_id["name_event"][i].replace("_", " ")}: {data_id["start_time"][i]} - '
-                        f'{data_id["end_time"][i]}')] = \
-                        int(data_id["start_time"][i].split(":")[0]) + (
-                                int(data_id["start_time"][i].split(":")[1]) / 100)
-        list_re = sort(d_re)
-        list_no_re = sort(d_no_re)
-        bot.send_message(message.chat.id, f"Repetitive events:{nl}"
-                                          f"{nl}{f'{nl}'.join(list_re)}"
-                                          f"{nl*2}Once-to-de events:{nl}"
-                                          f"{nl}{f'{nl}'.join(list_no_re)}")
-    else:
-        bot.send_message(message.chat.id, "Your schedule is empty")
+    try:
+        print(os.stat(filename))
+        if os.stat(filename).st_size != 0:
+            df = pd.read_csv(filename)
+            data_id = df.query(f"id_client == {message.chat.id}")
+            dates_dict = {}
+            for row in data_id.itertuples():
+                dates_dict[str(row.name_event)] = str(row.event_day), f"{row.start_time} - {row.end_time}"
+                print(type(dates_dict[str(row.name_event)]))
+            dates_dict = collections.OrderedDict(sorted(dates_dict.items(), key=lambda x: x[1], reverse=False))
+            print(dates_dict)
+            text = "Custom tasks: \n\n"
+            for data in dates_dict:
+                if dates_dict[data][0] != 'nan':
+                    text += "{:<30} {:<30} {:<30}\n".format(data, dates_dict[data][0], dates_dict[data][1])
+            text += "\nRoutine tasks: \n\n"
+            for data in dates_dict:
+                if dates_dict[data][0] == 'nan':
+                    text += "{:<30} {:<30} {:<30}\n".format(data, "Routine task", dates_dict[data][1])
+            print(text)
+            bot.send_message(message.chat.id, text)
+        else:
+            bot.send_message(message.chat.id, "Your schedule is empty")
+    except FileNotFoundError:
+        open(filename, "w")
+        return my_schedule(message)
 
 
 def sort(dictionary):
