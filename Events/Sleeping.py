@@ -10,7 +10,6 @@ def get_up(message):
         new_event.event = "Sleeping"
         time_get_up = user_time(message, get_up)
         if time_get_up:
-            # schedule.every().days.at(time_get_up).do(bot_send, message, "Hi, it`s time to wake up!\n")
             bot.send_message(message.chat.id, f"Okay, so you wake up at {time_get_up}. Huh, interesting.\n"
                                               f"Let me know, when you go to bed?")
             new_event.end_time = time_get_up
@@ -24,9 +23,6 @@ def got_to_bed(message):
     try:
         time_go_to_bed = user_time(message, got_to_bed)
         if time_go_to_bed:
-            # schedule.every().days.at(time_go_to_bed).do(bot_send, message, "That was a productive day.\n"
-            #                                                                "Time to relax.\n"
-            #                                                                "Time to sleep")
             bot.send_message(message.chat.id, f"Okay, you go to bed at {time_go_to_bed}. Hmm, that`s interesting.\n"
                                               f"I think we're done here.\nNow you can set up another part of your life")
             new_event.start_time = time_go_to_bed
