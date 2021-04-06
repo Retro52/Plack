@@ -1,7 +1,7 @@
 import random
 
 import matplotlib.pyplot as plt
-import pandas as pd
+# import pandas as pd
 from telebot.types import CallbackQuery
 
 import telebot_calendar
@@ -78,7 +78,6 @@ def data_analysis(message, date):
                                    f'{evt[0]} - {evt[1]}')
 
                     ax.barh(i, width=finish - start, left=start, alpha=0.5)
-                    # ax.barh(i, height=0.3, width=finish - start, left=start, alpha=0.5)
                     i += 1
 
                 else:
@@ -92,9 +91,7 @@ def data_analysis(message, date):
                     clr = random.choice(colors)
 
                     ax.barh(i, width=finish, left=0, alpha=0.5, color=clr)
-                    # ax.barh(i, height=0.3, width=finish, left=0, alpha=0.5, color=clr)
                     ax.barh(i, width=24 - start, left=start, alpha=0.5, color=clr)
-                    # ax.barh(i, height=0.3, width=24 - start, left=start, alpha=0.5, color=clr)
                     i += 1
 
             ax.set_yticks(range(len(ylabels)))

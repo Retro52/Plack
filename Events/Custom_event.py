@@ -96,10 +96,10 @@ def custom_end_time(message):
         new_event.re = False
         print(new_event.start_time)
         print(new_event.end_time)
-        schedule.every().days.at(new_event.start_time).do(bot_send, message,
-                                                          f"Time for event <b>{new_event.event}</b>\n"
-                                                          f"{new_event.start_time} - {new_event.end_time}",
-                                                          new_event.day)
+        # schedule.every().days.at(new_event.start_time).do(bot_send, message,
+        #                                                   f"Time for event <b>{new_event.event}</b>\n"
+        #                                                   f"{new_event.start_time} - {new_event.end_time}",
+        #                                                   new_event.day)
         new_event.create()
 
 
