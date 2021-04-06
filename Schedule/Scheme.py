@@ -55,27 +55,12 @@ def data_analysis(message, date):
             ylabels = []
             rows_name = []
             for row in data_id.itertuples():
-                if not isinstance(row.event_day, str) or row.event_day == str(date):
+                if str(row.event_day) == 'nan' or row.event_day == str(date):
+                    print("ROW", row)
                     rows_name.append(row.name_event)
                     first = row.start_time
                     second = row.end_time
-                    if not isinstance(second, str):
-                        if int(first.split(":")[1]) + 20 <= 59:
-                            second = ch_time(int(first.split(":")[0]), int(first.split(":")[1]) + 20)
-                        else:
-                            delta = 20 - (60 - int(first.split(":")[1]))
-                            second = ch_time(int(first.split(":")[0]) + 1, 0 + delta)
-                        if second.minute < 10 and second.hour < 10:
-                            time_f = "0" + str(second.hour) + ":" + "0" + str(second.minute)
-                        elif second.minute < 10 < second.hour:
-                            time_f = str(second.hour) + ":" + "0" + str(second.minute)
-                        elif second.minute > 10 > second.hour:
-                            time_f = "0" + str(second.hour) + ":" + str(second.minute)
-                        else:
-                            time_f = str(second.hour) + ":" + str(second.minute)
-                        a = (first, time_f)
-                    else:
-                        a = (first, second)
+                    a = (first, second)
                     x.append(a)
 
             fig, ax = plt.subplots()
@@ -92,25 +77,32 @@ def data_analysis(message, date):
                     ylabels.append(f'{rows_name[i]}\n'
                                    f'{evt[0]} - {evt[1]}')
 
-                    ax.barh(i, height=0.3, width=finish - start, left=start, alpha=0.5)
+                    ax.barh(i, width=finish - start, left=start, alpha=0.5)
+                    # ax.barh(i, height=0.3, width=finish - start, left=start, alpha=0.5)
                     i += 1
 
                 else:
+                    print("ROW NAME", f'{rows_name[i]}\n'
+                          f'{evt[0]} - {evt[1]}')
+
                     ylabels.append(f'{rows_name[i]}\n'
                                    f'{evt[0]} - {evt[1]}')
 
-                    colors = ['w', 'b', 'r', 'k', 'y', 'm', 'c']
+                    colors = ['b', 'r', 'k', 'y', 'm', 'c']
                     clr = random.choice(colors)
 
-                    ax.barh(i, height=0.3, width=finish, left=0, alpha=0.5, color=clr)
-                    ax.barh(i, height=0.3, width=24 - start, left=start, alpha=0.5, color=clr)
+                    ax.barh(i, width=finish, left=0, alpha=0.5, color=clr)
+                    # ax.barh(i, height=0.3, width=finish, left=0, alpha=0.5, color=clr)
+                    ax.barh(i, width=24 - start, left=start, alpha=0.5, color=clr)
+                    # ax.barh(i, height=0.3, width=24 - start, left=start, alpha=0.5, color=clr)
                     i += 1
 
             ax.set_yticks(range(len(ylabels)))
             ax.set_yticklabels(ylabels)
             ax.set_xticks(range(0, 25))
             ax.set_xticklabels(range(0, 25))
-            ax.grid(True)
+            # ax.grid(True)
+            ax.grid(False)
             plt.title = f"Schedule for {date}"
             fig = plt.gcf()
             fig.set_size_inches(19.2, 10.8)

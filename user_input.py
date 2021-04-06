@@ -1,6 +1,7 @@
+import datetime
 import time
 from datetime import time as ch_time
-import datetime
+
 import schedule
 from telebot import types
 
@@ -45,17 +46,7 @@ def user_time(message, function):
             bot.send_message(message.chat.id, "Wrong input format", reply_markup=markup)
             error(message, function)
         else:
-            if time_dinner.minute < 10 and time_dinner.hour < 10:
-                time_f = "0" + str(time_dinner.hour) + ":" + "0" + str(time_dinner.minute)
-
-            elif time_dinner.minute < 10 <= time_dinner.hour:
-                time_f = str(time_dinner.hour) + ":" + "0" + str(time_dinner.minute)
-            elif time_dinner.minute >= 10 > time_dinner.hour:
-                time_f = "0" + str(time_dinner.hour) + ":" + str(time_dinner.minute)
-            else:
-                time_f = str(time_dinner.hour) + ":" + str(time_dinner.minute)
-            print(time_f)
-            return time_f
+            return correct_time(time_dinner)
 
     else:
         try:
@@ -68,6 +59,33 @@ def user_time(message, function):
             markup = default_markup()
             bot.send_message(message.chat.id, "Wrong input format", reply_markup=markup)
             error(message, function)
+
+
+def end_time(start_time, delta_time):
+    hours = int(start_time.split(":")[0])
+    minutes = int(start_time.split(":")[1])
+    minutes_sum = minutes + delta_time
+    if minutes_sum > 59:
+        minutes = minutes_sum - 60
+        hours += 1
+        if hours == 24:
+            hours = 0
+    else:
+        minutes = minutes_sum
+    time_dinner = ch_time(hours, minutes)
+    return correct_time(time_dinner)
+
+
+def correct_time(time_dinner):
+    if time_dinner.minute < 10 and time_dinner.hour < 10:
+        time_f = "0" + str(time_dinner.hour) + ":" + "0" + str(time_dinner.minute)
+    elif time_dinner.minute < 10 <= time_dinner.hour:
+        time_f = str(time_dinner.hour) + ":" + "0" + str(time_dinner.minute)
+    elif time_dinner.minute >= 10 > time_dinner.hour:
+        time_f = "0" + str(time_dinner.hour) + ":" + str(time_dinner.minute)
+    else:
+        time_f = str(time_dinner.hour) + ":" + str(time_dinner.minute)
+    return time_f
 
 
 def schedule_checker():
