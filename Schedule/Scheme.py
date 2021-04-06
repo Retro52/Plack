@@ -1,7 +1,6 @@
 import random
 
 import matplotlib.pyplot as plt
-# import pandas as pd
 from telebot.types import CallbackQuery
 
 import telebot_calendar
@@ -60,13 +59,16 @@ def data_analysis(message, date):
                     rows_name.append(row.name_event)
                     first = row.start_time
                     second = row.end_time
-                    a = (first, second)
+                    a = (first, second, row.name_event)
                     x.append(a)
 
             fig, ax = plt.subplots()
             i = 0
+            print(x)
+            x.sort(key=lambda tup: tup[0], reverse=True)
+            print(x)
             for m, evt in enumerate(x):
-
+                print(evt)
                 start = int(evt[0].split(":")[0]) + ((int(evt[0].split(":")[1])) / 60)
                 finish = ((int(evt[1].split(":")[1]) - int(evt[0].split(":")[1])) / 60) + (
                     int(evt[1].split(":")[0])) - int(
@@ -74,17 +76,17 @@ def data_analysis(message, date):
 
                 if finish > start:
 
-                    ylabels.append(f'{rows_name[i]}\n'
+                    ylabels.append(f'{evt[2]}\n'
                                    f'{evt[0]} - {evt[1]}')
 
                     ax.barh(i, width=finish - start, left=start, alpha=0.5)
                     i += 1
 
                 else:
-                    print("ROW NAME", f'{rows_name[i]}\n'
-                          f'{evt[0]} - {evt[1]}')
+                    print("ROW NAME", f'{evt[2]}\n'
+                                      f'{evt[0]} - {evt[1]}')
 
-                    ylabels.append(f'{rows_name[i]}\n'
+                    ylabels.append(f'{evt[2]}\n'
                                    f'{evt[0]} - {evt[1]}')
 
                     colors = ['b', 'r', 'k', 'y', 'm', 'c']
