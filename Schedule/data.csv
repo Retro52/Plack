@@ -2,3 +2,14 @@ id_client,name_event,event_day,start_time,end_time,re
 759785139,Breakfast,,07:59,,True
 759785139,Lunch,,08:00,,True
 759785139,Diner,,08:01,,True
+559325489,Custom,2021-04-06,10:25,12:00,False
+559325489,7th april,2021-04-07,15:50,19:45,False
+559325489,Sleeping,,20:50,08:30,True
+559325489,11th April,2021-05-16,12:00,16:50,False
+559325489,7Th paril,2021-04-07,18:00,18:30,False
+559325489,5th May,2021-05-20,12:30,23:59,False
+559325489,5th march,2021-04-05,08:15,19:45,False
+559325489,Breakfast,,08:48,09:18,True
+559325489,Lunch,,09:30,10:00,True
+559325489,Diner,,23:59,00:29,True
+559325489,7Th paril,2021-04-07,19:30,23:15,False

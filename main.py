@@ -85,6 +85,11 @@ def callback_inline(call):
         bot.send_message(call.message.chat.id, text=f"An error has occurred - {repr(e)}")
 
 
-Thread(target=schedule_checker).start()
+def main():
+    Thread(target=schedule_checker).start()
 
-bot.polling(none_stop=True)
+    bot.polling(none_stop=True)
+
+
+if __name__ == '__main__':
+    main()

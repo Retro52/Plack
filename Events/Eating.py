@@ -13,6 +13,7 @@ def breakfast(message):
             new_event.event = "Breakfast"
             new_event.re = True
             new_event.start_time = time_breakfast
+            new_event.end_time = end_time(new_event.start_time, 30)
             new_event.create()
             bot.register_next_step_handler(message, lunch)
     except ValueError:
@@ -33,6 +34,7 @@ def lunch(message):
             new_event.event = "Lunch"
             new_event.re = True
             new_event.start_time = time_lunch
+            new_event.end_time = end_time(new_event.start_time, 30)
             new_event.create()
             bot.register_next_step_handler(message, dinner)
     except ValueError:
@@ -54,6 +56,7 @@ def dinner(message):
             new_event.event = "Diner"
             new_event.re = True
             new_event.start_time = time_dinner
+            new_event.end_time = end_time(new_event.start_time, 30)
             new_event.create()
             bot.send_message(message.chat.id,
                              f"You have a dinner at {time_dinner}. \nNow I will send this to server where"
