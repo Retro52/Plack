@@ -86,8 +86,8 @@ def callback_inline(call):
 
 
 def main():
-    Thread(target=schedule_checker).start()
-
+    # Thread(target=schedule_checker).start()
+    Thread(target=schedule_per_user).start()
     bot.polling(none_stop=True)
 
 

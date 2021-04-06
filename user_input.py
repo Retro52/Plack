@@ -2,9 +2,10 @@ import datetime
 import time
 from datetime import time as ch_time
 
-import schedule
+import pandas as pd
 from telebot import types
 
+import Schedule.Scheme
 from config import *
 
 
@@ -13,12 +14,20 @@ def error(message, function):
     bot.register_next_step_handler(message, function)
 
 
-def bot_send(message, name, day=None):
-    if day is not None:
-        if day == datetime.datetime.now().date():
-            bot.send_message(message.chat.id, f"{name}", parse_mode='html')
+def bot_send(chat_id, name, day=None):
+    print(f"Checking event {name}, id {chat_id}, day{day}")
+    if day is not None and str(day) != 'nan':
+        print("Day is not nan or None passed")
+        print(str(day) == str(datetime.datetime.now().date()), str(day), datetime.datetime.now().date(),
+              type(day), type(datetime.datetime.now().date()))
+        if day == str(datetime.datetime.now().date()):
+            bot.send_message(chat_id, f"{name}", parse_mode='html')
+            # time.sleep(60)
+            # return
     else:
-        bot.send_message(message.chat.id, f"{name}", parse_mode='html')
+        bot.send_message(chat_id, f"{name}", parse_mode='html')
+        # return
+        # time.sleep(60)
 
 
 def default_markup():
@@ -88,7 +97,23 @@ def correct_time(time_dinner):
     return time_f
 
 
-def schedule_checker():
+# def schedule_checker():
+#     while True:
+#         schedule.run_pending()
+#         time.sleep(1)
+
+
+def schedule_per_user():
     while True:
-        schedule.run_pending()
-        time.sleep(1)
+        print(datetime.datetime.now())
+        df = pd.read_csv(Schedule.Scheme.filename)
+        for row in df.itertuples():
+            print(row.start_time,
+                  f"{str(datetime.datetime.now().time().hour)}:{str(datetime.datetime.now().time().minute)}")
+            if f"{str(datetime.datetime.now().time().hour)}:{str(datetime.datetime.now().time().minute)}"\
+                    == str(row.start_time):
+                bot_send(row.id_client,
+                         f"Time for event <b>{row.name_event}</b>\n"
+                         f"{row.start_time} - {row.end_time}",
+                         row.event_day)
+        time.sleep(59)
