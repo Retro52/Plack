@@ -14,12 +14,11 @@ def error(message, function):
     bot.register_next_step_handler(message, function)
 
 
-def bot_send(chat_id, name, day=None):
-    if day is not None and str(day) != 'nan':
-        if day == str(datetime.datetime.now().date()):
-            bot.send_message(chat_id, f"{name}", parse_mode='html')
-    else:
-        bot.send_message(chat_id, f"{name}", parse_mode='html')
+def bot_send(row, name, day=None):
+    # print("Inside bot send")
+    bot.send_message(row.id_client, f"{name}", parse_mode='html')
+    # else:
+    #     bot.send_message(row.id_client, f"{name}", parse_mode='html')
 
 
 def default_markup():
@@ -91,13 +90,26 @@ def correct_time(time_dinner):
 
 def schedule_per_user():
     while True:
-        # if os.stat(filename).st_size != 0:
         df = pd.read_csv(Schedule.Scheme.filename)
-        cur_time = correct_time(datetime.datetime.now().time())
-        cur_sec = datetime.datetime.now().time().second
+        cur_time = datetime.datetime.now()
+        cur_time_1970 = datetime.datetime(year=cur_time.year,
+                                          month=cur_time.month,
+                                          day=cur_time.day,
+                                          hour=cur_time.hour,
+                                          minute=cur_time.minute,
+                                          second=cur_time.second).timestamp()
         for row in df.itertuples():
-            if f"{cur_time}:{cur_sec}" == f"{str(row.start_time)}:0":
-                bot_send(row.id_client,
+            row_date = str(row.event_day).split("-")
+            row_time = str(row.start_time).split(":")
+            row_1970 = datetime.datetime(year=int(row_date[0]),
+                                         month=int(row_date[1]),
+                                         day=int(row_date[2]),
+                                         hour=int(row_time[0]),
+                                         minute=int(row_time[1]),
+                                         second=0
+                                         ).timestamp()
+            if abs(int(cur_time_1970 - row_1970)) % row.delta == 0:
+                bot_send(row,
                          f"Time for event <b>{row.name_event}</b>\n"
                          f"{row.start_time} - {row.end_time}",
                          row.event_day)

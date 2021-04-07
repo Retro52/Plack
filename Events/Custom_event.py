@@ -4,8 +4,9 @@ import telebot_calendar
 from Schedule import data
 from telebot_calendar import CallbackData
 from user_input import *
+from config import *
 
-calendar_1 = CallbackData("calendar_1", "action", "year", "month", "day")
+calendar_1 = CallbackData("CustomEventDate", "action", "year", "month", "day")
 
 
 class CustomEvent:
@@ -13,13 +14,14 @@ class CustomEvent:
         """Custom event"""
         self.id_clients = None
         self.event = "Event"
+        self.day = str(datetime.datetime.now().date())
         self.start_time = None
         self.end_time = None
         self.re = False
-        self.day = None
+        self.delta = 86400
 
     def create(self):
-        data.write(self.id_clients, self.event, self.day, self.start_time, self.end_time, self.re)
+        data.write(self.id_clients, self.event, self.day, self.start_time, self.end_time, self.re, self.delta)
 
 
 new_event = CustomEvent()
@@ -91,9 +93,56 @@ def custom_start_time(message):
 def custom_end_time(message):
     new_event.end_time = user_time(message, custom_end_time)
     if new_event.end_time:
-        markup = default_markup()
-        bot.send_message(message.chat.id, f"Event {new_event.event} successfully created", reply_markup=markup)
-        new_event.re = False
         print(new_event.start_time)
         print(new_event.end_time)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Once a week")
+        item2 = types.KeyboardButton("Every day")
+        item3 = types.KeyboardButton("No, thanks")
+        markup.add(item1, item2, item3)
+        bot.send_message(message.chat.id, f"Is this event repetitive?\n"
+                                          f"If yes, you can send a number of days between this event or pick"
+                                          f"from the prepared buttons\n"
+                                          f"For example, if you want to repeat it once a week send 7.\n"
+                                          f"Every day - 1, etc.", reply_markup=markup)
+        bot.register_next_step_handler(message, custom_repeat)
+
+
+def custom_repeat(message):
+    if message.text == "Once a week":
+        new_event.re = True
+        new_event.delta = 7 * 24 * 60 * 60
+        markup = default_markup()
+        bot.send_message(message.chat.id, f"Event {new_event.event} successfully created", reply_markup=markup)
         new_event.create()
+    elif message.text == "Every day":
+        new_event.re = True
+        new_event.delta = 1 * 24 * 60 * 60
+        markup = default_markup()
+        bot.send_message(message.chat.id, f"Event {new_event.event} successfully created", reply_markup=markup)
+        new_event.create()
+    elif message.text == "No, thanks":
+        new_event.re = False
+        markup = default_markup()
+        bot.send_message(message.chat.id, f"Event {new_event.event} successfully created", reply_markup=markup)
+        new_event.create()
+    else:
+        try:
+            delta = int(message.text)
+            if delta == 1:
+                new_event.re = False
+                new_event.delta = delta
+                new_event.day = None
+                markup = default_markup()
+                bot.send_message(message.chat.id, f"Event {new_event.event} successfully created", reply_markup=markup)
+                new_event.create()
+            else:
+                new_event.re = True
+                new_event.delta = delta * 24 * 60 * 60
+                markup = default_markup()
+                bot.send_message(message.chat.id, f"Event {new_event.event} successfully created", reply_markup=markup)
+                new_event.create()
+
+        except ValueError:
+            bot.send_message(message.chat.id, "Sorry, didn`t get what you mean")
+            error(message, custom_repeat)
