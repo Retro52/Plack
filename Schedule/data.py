@@ -1,11 +1,11 @@
 import csv
 import os
 
-fieldnames = ["id_client", "name_event", "event_day", "start_time", "end_time", "re"]
+fieldnames = ["id_client", "name_event", "event_day", "start_time", "end_time", "re", "delta"]
 filename = 'Schedule/data.csv'
 
 
-def write(id_client, even, day, start_time, end_time, re):
+def write(id_client, even, day, start_time, end_time, re, delta):
     try:
         if os.stat(filename).st_size == 0:
             with open(filename, "w", newline='') as file:
@@ -18,7 +18,8 @@ def write(id_client, even, day, start_time, end_time, re):
                              "event_day": day,
                              "start_time": start_time,
                              "end_time": end_time,
-                             "re": re})
+                             "re": re,
+                             "delta": delta})
     except FileNotFoundError:
         open(filename, "w")
-        return write(id_client, even, day, start_time, end_time, re)
+        return write(id_client, even, day, start_time, end_time, re, delta)
