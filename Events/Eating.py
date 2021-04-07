@@ -10,7 +10,6 @@ def breakfast(message):
             new_event.__init__()
             new_event.id_clients = message.chat.id
             new_event.event = "Breakfast"
-            new_event.re = True
             new_event.start_time = time_breakfast
             new_event.end_time = end_time(new_event.start_time, 30)
             new_event.create()
@@ -28,7 +27,6 @@ def lunch(message):
             new_event.__init__()
             new_event.id_clients = message.chat.id
             new_event.event = "Lunch"
-            new_event.re = True
             new_event.start_time = time_lunch
             new_event.end_time = end_time(new_event.start_time, 30)
             new_event.create()
@@ -44,7 +42,6 @@ def dinner(message):
             new_event.__init__()
             new_event.id_clients = message.chat.id
             new_event.event = "Diner"
-            new_event.re = True
             new_event.start_time = time_dinner
             new_event.end_time = end_time(new_event.start_time, 30)
             new_event.create()

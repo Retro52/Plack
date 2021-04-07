@@ -1,12 +1,13 @@
 import random
-
+import datetime
+from config import *
 import matplotlib.pyplot as plt
 from telebot.types import CallbackQuery
-
 import telebot_calendar
 from Schedule.data import *
 from telebot_calendar import CallbackData
-from user_input import *
+from user_input import default_markup
+import pandas as pd
 
 calendar = CallbackData("Schedule", "action", "year", "month", "day")
 
@@ -53,8 +54,31 @@ def data_analysis(message, date):
             x = []
             ylabels = []
             rows_name = []
+            print(date)
+            user_date = int(datetime.datetime(date.year, date.month, date.day, hour=0, minute=0, second=0).timestamp())
+            event_date = 0
             for row in data_id.itertuples():
-                if str(row.event_day) == 'nan' or row.event_day == str(date):
+                sequence = []
+                # print("ROW EVENT DAY", row.event_day)
+                # print("DATE", date)
+
+                if str(row.event_day) != 'nan':
+                    sequence = str(row.event_day).split("-")
+                    event_date = int(datetime.datetime(year=int(sequence[0]),
+                                                       month=int(sequence[1]),
+                                                       day=int(sequence[2]),
+                                                       hour=0,
+                                                       minute=0,
+                                                       second=0).timestamp())
+                    # print("EVENT DATE", event_date)
+                    # print("USER DATE", user_date)
+                    # print("ROW DELTA", row.delta)
+                    # print("ACTUAL DELTA", event_date - user_date)
+                    # print("abs(int(event_date - user_date))
+                    # % row.delta =", abs(int(event_date - user_date)) % row.delta)
+                    # print("Sequence", sequence)
+
+                if str(row.event_day) == 'nan' or abs(int(event_date - user_date)) % row.delta == 0:
                     print("ROW", row)
                     rows_name.append(row.name_event)
                     first = row.start_time
@@ -100,7 +124,6 @@ def data_analysis(message, date):
             ax.set_yticklabels(ylabels)
             ax.set_xticks(range(0, 25))
             ax.set_xticklabels(range(0, 25))
-            # ax.grid(True)
             ax.grid(False)
             plt.title = f"Schedule for {date}"
             fig = plt.gcf()

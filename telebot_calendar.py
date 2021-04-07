@@ -14,7 +14,7 @@ class Language:
 
 
 ENGLISH_LANGUAGE = Language(
-    days=("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"),
+    days=("Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"),
     months=(
         "January",
         "February",

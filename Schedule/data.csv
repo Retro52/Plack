@@ -1,10 +1,2 @@
-id_client,name_event,event_day,start_time,end_time,re
-559325489,Sleeping,,23:45,08:00,True
-559325489,Go to pharmacy,2021-04-07,08:00,10:25,False
-559325489,ADS Practice Syrota,2021-04-07,10:25,12:20,False
-559325489,Breakfast,,10:00,10:30,True
-559325489,Lunch,,16:20,16:50,True
-559325489,Diner,,20:15,20:45,True
-559325489,Lab for Gromova,2021-04-10,18:00,22:00,False
-559325489,Kolokwium Polska Algebra liniowa,2021-04-09,13:30,15:00,False
-559325489,Kolokwium Ukraine MA,2021-04-09,11:15,12:20,False
+id_client,name_event,event_day,start_time,end_time,re,delta
+559325489,Lunch,2021-04-07,16:14,16:50,False,86400
