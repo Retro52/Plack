@@ -3,6 +3,7 @@ from threading import Thread
 from Schedule import schedule_print as sch, Scheme
 from Events.Sleeping import *
 from Events.Eating import *
+# from user_input import *
 
 
 @bot.message_handler(commands=['start'])

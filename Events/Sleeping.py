@@ -1,5 +1,5 @@
 from Events.Custom_event import *
-
+from user_input import *
 new_event = CustomEvent()
 
 
@@ -13,7 +13,6 @@ def get_up(message):
             bot.send_message(message.chat.id, f"Okay, so you wake up at {time_get_up}. Huh, interesting.\n"
                                               f"Let me know, when you go to bed?")
             new_event.end_time = time_get_up
-            new_event.re = True
             bot.register_next_step_handler(message, got_to_bed)
     except ValueError:
         error(message, get_up)
