@@ -18,7 +18,7 @@ class CustomEvent:
         self.start_time = None
         self.end_time = None
         self.re = False
-        self.delta = 86400
+        self.delta = None
 
     def create(self):
         data.write(self.id_clients, self.event, self.day, self.start_time, self.end_time, self.re, self.delta)

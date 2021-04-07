@@ -25,6 +25,8 @@ def got_to_bed(message):
             bot.send_message(message.chat.id, f"Okay, you go to bed at {time_go_to_bed}. Hmm, that`s interesting.\n"
                                               f"I think we're done here.\nNow you can set up another part of your life")
             new_event.start_time = time_go_to_bed
+            new_event.re = True
+            new_event.delta = 24 * 3600
             new_event.create()
         else:
             apologise(message)

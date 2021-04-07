@@ -108,7 +108,8 @@ def schedule_per_user():
                                          minute=int(row_time[1]),
                                          second=0
                                          ).timestamp()
-            if abs(int(cur_time_1970 - row_1970)) % row.delta == 0:
+            if (abs(int(cur_time_1970 - row_1970)) % row.delta == 0 and row.re is True) or\
+                    (cur_time_1970 == row_1970 and row.re is False):
                 bot_send(row,
                          f"Time for event <b>{row.name_event}</b>\n"
                          f"{row.start_time} - {row.end_time}",

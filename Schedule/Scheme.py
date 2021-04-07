@@ -78,7 +78,8 @@ def data_analysis(message, date):
                     # % row.delta =", abs(int(event_date - user_date)) % row.delta)
                     # print("Sequence", sequence)
 
-                if str(row.event_day) == 'nan' or abs(int(event_date - user_date)) % row.delta == 0:
+                if (abs(int(event_date - user_date)) % row.delta == 0 and row.re is True) or\
+                    (event_date == user_date and row.re is False):
                     print("ROW", row)
                     rows_name.append(row.name_event)
                     first = row.start_time
