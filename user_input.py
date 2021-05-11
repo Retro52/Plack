@@ -14,20 +14,18 @@ def error(message, function):
     bot.register_next_step_handler(message, function)
 
 
-def bot_send(row, name, day=None):
-    # print("Inside bot send")
+def bot_send(row, name):
     bot.send_message(row.id_client, f"{name}", parse_mode='html')
-    # else:
-    #     bot.send_message(row.id_client, f"{name}", parse_mode='html')
 
 
 def default_markup():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Add new event")
-    item2 = types.KeyboardButton("My schedule")
-    item3 = types.KeyboardButton("My stats")
-    item4 = 'debug_clear_csv'
-    markup.add(item1, item2, item3, item4)
+    item2 = types.KeyboardButton("My day")
+    item3 = types.KeyboardButton("My plans")
+    # item4 = 'debug_clear_csv'
+    markup.add(item1, item2, item3)
+    # markup.add(item1, item2, item3, item4)
     return markup
 
 
@@ -112,6 +110,5 @@ def schedule_per_user():
                     (cur_time_1970 == row_1970 and row.re is False):
                 bot_send(row,
                          f"Time for event <b>{row.name_event}</b>\n"
-                         f"{row.start_time} - {row.end_time}",
-                         row.event_day)
+                         f"{row.start_time} - {row.end_time}")
         time.sleep(1)

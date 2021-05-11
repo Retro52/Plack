@@ -21,11 +21,11 @@ def my_schedule(message):
             text = "Custom tasks: \n\n"
             for data in dates_dict:
                 if dates_dict[data][0] != 'nan':
-                    text += "{:<30} {:<30} {:<30}\n".format(data, dates_dict[data][0], dates_dict[data][1])
+                    text += "{:<50} {:<50} {:<50}\n".format(data, dates_dict[data][0], dates_dict[data][1])
             text += "\nRoutine tasks: \n\n"
             for data in dates_dict:
                 if dates_dict[data][0] == 'nan':
-                    text += "{:<30} {:<30} {:<30}\n".format(data, "Routine task", dates_dict[data][1])
+                    text += "{:<50} {:<50} {:<50}\n".format(data, "Routine task", dates_dict[data][1])
             print(text)
             bot.send_message(message.chat.id, text)
         else:

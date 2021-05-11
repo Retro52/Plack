@@ -1,13 +1,15 @@
-import random
 import datetime
-from config import *
+import random
+
 import matplotlib.pyplot as plt
+import pandas as pd
 from telebot.types import CallbackQuery
+
 import telebot_calendar
 from Schedule.data import *
+from config import *
 from telebot_calendar import CallbackData
 from user_input import default_markup
-import pandas as pd
 
 calendar = CallbackData("Schedule", "action", "year", "month", "day")
 
@@ -54,13 +56,10 @@ def data_analysis(message, date):
             x = []
             ylabels = []
             rows_name = []
-            print(date)
+            # print(date)
             user_date = int(datetime.datetime(date.year, date.month, date.day, hour=0, minute=0, second=0).timestamp())
             event_date = 0
             for row in data_id.itertuples():
-                sequence = []
-                # print("ROW EVENT DAY", row.event_day)
-                # print("DATE", date)
 
                 if str(row.event_day) != 'nan':
                     sequence = str(row.event_day).split("-")
@@ -78,9 +77,9 @@ def data_analysis(message, date):
                     # % row.delta =", abs(int(event_date - user_date)) % row.delta)
                     # print("Sequence", sequence)
 
-                if (abs(int(event_date - user_date)) % row.delta == 0 and row.re is True) or\
-                    (event_date == user_date and row.re is False):
-                    print("ROW", row)
+                if (abs(int(event_date - user_date)) % row.delta == 0 and row.re is True) or (
+                        event_date == user_date and row.re is False):
+                    # print("ROW", row)
                     rows_name.append(row.name_event)
                     first = row.start_time
                     second = row.end_time
@@ -89,11 +88,11 @@ def data_analysis(message, date):
 
             fig, ax = plt.subplots()
             i = 0
-            print(x)
+            # print(x)
             x.sort(key=lambda tup: tup[0], reverse=True)
-            print(x)
+            # print(x)
             for m, evt in enumerate(x):
-                print(evt)
+                # print(evt)
                 start = int(evt[0].split(":")[0]) + ((int(evt[0].split(":")[1])) / 60)
                 finish = ((int(evt[1].split(":")[1]) - int(evt[0].split(":")[1])) / 60) + (
                     int(evt[1].split(":")[0])) - int(
@@ -108,8 +107,8 @@ def data_analysis(message, date):
                     i += 1
 
                 else:
-                    print("ROW NAME", f'{evt[2]}\n'
-                                      f'{evt[0]} - {evt[1]}')
+                    # print("ROW NAME", f'{evt[2]}\n'
+                    #                   f'{evt[0]} - {evt[1]}')
 
                     ylabels.append(f'{evt[2]}\n'
                                    f'{evt[0]} - {evt[1]}')
@@ -129,10 +128,10 @@ def data_analysis(message, date):
             plt.title = f"Schedule for {date}"
             fig = plt.gcf()
             fig.set_size_inches(19.2, 10.8)
-            imagefile = 'Schedule/data.png'
+            imagefile = f'{message.chat.id}/data.png'
             plt.savefig(imagefile)
             img = open(imagefile, 'rb')
-            bot.send_photo(message.chat.id, img, caption=f"Your schedule for {date}")
+            bot.send_photo(message.chat.id, img, caption=f"Your schedule for {date.day} - {date.month} - {date.year}")
         else:
             bot.send_message(message.chat.id, "Nothing to analyse so far(")
     except FileNotFoundError:

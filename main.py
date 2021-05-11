@@ -1,9 +1,7 @@
 from threading import Thread
-
-from Schedule import schedule_print as sch, Scheme
+from Schedule import Scheme
 from Events.Sleeping import *
 from Events.Eating import *
-# from user_input import *
 
 
 @bot.message_handler(commands=['start'])
@@ -29,24 +27,27 @@ def main_menu(message):
 
             item1 = types.InlineKeyboardButton("Sleeping", callback_data='sleeping')
             item2 = types.InlineKeyboardButton("Eating", callback_data='eating')
-            item3 = types.InlineKeyboardButton("Trainings", callback_data='trainings')
-            item4 = types.InlineKeyboardButton("Pets", callback_data='pets')
-            item5 = types.InlineKeyboardButton("Cleaning", callback_data='cleaning')
-            item6 = types.InlineKeyboardButton("Studying/working hours", callback_data='studying')
-            item7 = types.InlineKeyboardButton("Self-education", callback_data='education')
+            # item3 = types.InlineKeyboardButton("Trainings", callback_data='trainings')
+            # item4 = types.InlineKeyboardButton("Pets", callback_data='pets')
+            # item5 = types.InlineKeyboardButton("Cleaning", callback_data='cleaning')
+            # item6 = types.InlineKeyboardButton("Studying/working hours", callback_data='studying')
+            # item7 = types.InlineKeyboardButton("Self-education", callback_data='education')
             item8 = types.InlineKeyboardButton("Add something new   ", callback_data='add')
 
-            markup.add(item1, item2, item3, item4, item5, item6, item7, item8)
+            markup.add(item1, item2, item8)
+            # markup.add(item1, item2, item3, item4, item5, item6, item7, item8)
 
             bot.send_message(message.chat.id, 'What do we set up next, boss?', reply_markup=markup)
-        elif message.text == 'My schedule':
-            sch.my_schedule(message)
-        elif message.text == "My stats":
+        elif message.text == 'My day':
+            now = datetime.datetime.now()
+            Scheme.data_analysis(message, now)
+        elif message.text == "My plans":
             Scheme.schedule_date(message)
         elif message.text == 'debug_clear_csv':
-            filename = "Schedule/data.csv"
-            f = open(filename, "w+")
-            f.close()
+            pass
+            # filename = "Schedule/data.csv"
+            # f = open(filename, "w+")
+            # f.close()
         else:
             bot.send_message(message.chat.id, 'Sorry, I dont understand you')
 
@@ -86,10 +87,19 @@ def callback_inline(call):
         bot.send_message(call.message.chat.id, text=f"An error has occurred - {repr(e)}")
 
 
+def polling():
+    while True:
+        try:
+            bot.polling(none_stop=True)
+
+        except Exception as e:
+            print(e)
+            time.sleep(1)
+
+
 def main():
-    # Thread(target=schedule_checker).start()
     Thread(target=schedule_per_user).start()
-    bot.polling(none_stop=True)
+    Thread(target=polling).start()
 
 
 if __name__ == '__main__':
