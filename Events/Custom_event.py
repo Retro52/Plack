@@ -63,12 +63,10 @@ def callback_inline(call: CallbackQuery):
             reply_markup=ReplyKeyboardRemove(),
         )
         new_event.day = date.date()
-        # new_event.day = new_event.day.strftime('%m/%d/%Y')
         bot.send_message(
             chat_id=call.from_user.id,
             text=f"Now send event start time (for example '11:00' or just '11')",
             reply_markup=default_markup(),
-
         )
         bot.register_next_step_handler(call.message, custom_start_time)
     elif action == "CANCEL":

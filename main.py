@@ -2,6 +2,7 @@ from threading import Thread
 from Schedule import Scheme
 from Events.Sleeping import *
 from Events.Eating import *
+from Schedule.Delete_event import *
 
 
 @bot.message_handler(commands=['start'])
@@ -20,34 +21,21 @@ def welcome(message):
 @bot.message_handler(content_types=['text'])
 def main_menu(message):
     if message.chat.type == 'private':
-
         if message.text == 'Add new event':
-
             markup = types.InlineKeyboardMarkup(row_width=2)
-
-            item1 = types.InlineKeyboardButton("Sleeping", callback_data='sleeping')
-            item2 = types.InlineKeyboardButton("Eating", callback_data='eating')
-            # item3 = types.InlineKeyboardButton("Trainings", callback_data='trainings')
-            # item4 = types.InlineKeyboardButton("Pets", callback_data='pets')
-            # item5 = types.InlineKeyboardButton("Cleaning", callback_data='cleaning')
-            # item6 = types.InlineKeyboardButton("Studying/working hours", callback_data='studying')
-            # item7 = types.InlineKeyboardButton("Self-education", callback_data='education')
+            item1 = types.InlineKeyboardButton("Sleeping schedule", callback_data='sleeping')
+            item2 = types.InlineKeyboardButton("Eating time", callback_data='eating')
             item8 = types.InlineKeyboardButton("Add something new   ", callback_data='add')
-
             markup.add(item1, item2, item8)
-            # markup.add(item1, item2, item3, item4, item5, item6, item7, item8)
-
             bot.send_message(message.chat.id, 'What do we set up next, boss?', reply_markup=markup)
         elif message.text == 'My day':
             now = datetime.datetime.now()
             Scheme.data_analysis(message, now)
         elif message.text == "My plans":
             Scheme.schedule_date(message)
-        elif message.text == 'debug_clear_csv':
-            pass
-            # filename = "Schedule/data.csv"
-            # f = open(filename, "w+")
-            # f.close()
+        elif message.text == 'debug_delete_event':
+            print('HERE')
+            delete("456", message.chat.id)
         else:
             bot.send_message(message.chat.id, 'Sorry, I dont understand you')
 
@@ -91,7 +79,6 @@ def polling():
     while True:
         try:
             bot.polling(none_stop=True)
-
         except Exception as e:
             print(e)
             time.sleep(1)

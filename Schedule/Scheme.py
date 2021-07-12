@@ -1,5 +1,6 @@
 import datetime
 import random
+# import config
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -7,7 +8,7 @@ from telebot.types import CallbackQuery
 
 import telebot_calendar
 from Schedule.data import *
-from config import *
+# from config import *
 from telebot_calendar import CallbackData
 from user_input import default_markup
 
@@ -23,24 +24,24 @@ def schedule_date(message):
         year=now.year,
         month=now.month,
     )
-    bot.send_message(
+    config.bot.send_message(
         chat_id=message.chat.id,
         text="Select schedule date",
         reply_markup=markup,
     )
 
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith(calendar.prefix))
+@config.bot.callback_query_handler(func=lambda call: call.data.startswith(calendar.prefix))
 def callback_inline(call: CallbackQuery):
     name, action, year, month, day = call.data.split(calendar.sep)
 
     date = telebot_calendar.Calendar()
     date = telebot_calendar.Calendar.calendar_query_handler(self=date,
-                                                            bot=bot, call=call, name=name, action=action, year=year,
+                                                            bot=config.bot, call=call, name=name, action=action, year=year,
                                                             month=month, day=day
                                                             )
     if action == "DAY":
-        bot.send_message(
+        config.bot.send_message(
             chat_id=call.from_user.id,
             text=f"You have chosen {date.strftime('%d.%m.%Y')}",
             reply_markup=default_markup(),
@@ -50,13 +51,12 @@ def callback_inline(call: CallbackQuery):
 
 def data_analysis(message, date):
     try:
-        if os.stat(filename).st_size != 0:
-            df = pd.read_csv(filename)
+        if os.stat(config.filename).st_size != 0:
+            df = pd.read_csv(config.filename)
             data_id = df.query(f"id_client ==  {message.chat.id}")
             x = []
             ylabels = []
             rows_name = []
-            # print(date)
             user_date = int(datetime.datetime(date.year, date.month, date.day, hour=0, minute=0, second=0).timestamp())
             event_date = 0
             for row in data_id.itertuples():
@@ -69,17 +69,9 @@ def data_analysis(message, date):
                                                        hour=0,
                                                        minute=0,
                                                        second=0).timestamp())
-                    # print("EVENT DATE", event_date)
-                    # print("USER DATE", user_date)
-                    # print("ROW DELTA", row.delta)
-                    # print("ACTUAL DELTA", event_date - user_date)
-                    # print("abs(int(event_date - user_date))
-                    # % row.delta =", abs(int(event_date - user_date)) % row.delta)
-                    # print("Sequence", sequence)
 
                 if (abs(int(event_date - user_date)) % row.delta == 0 and row.re is True) or (
                         event_date == user_date and row.re is False):
-                    # print("ROW", row)
                     rows_name.append(row.name_event)
                     first = row.start_time
                     second = row.end_time
@@ -88,11 +80,8 @@ def data_analysis(message, date):
 
             fig, ax = plt.subplots()
             i = 0
-            # print(x)
             x.sort(key=lambda tup: tup[0], reverse=True)
-            # print(x)
             for m, evt in enumerate(x):
-                # print(evt)
                 start = int(evt[0].split(":")[0]) + ((int(evt[0].split(":")[1])) / 60)
                 finish = ((int(evt[1].split(":")[1]) - int(evt[0].split(":")[1])) / 60) + (
                     int(evt[1].split(":")[0])) - int(
@@ -107,8 +96,6 @@ def data_analysis(message, date):
                     i += 1
 
                 else:
-                    # print("ROW NAME", f'{evt[2]}\n'
-                    #                   f'{evt[0]} - {evt[1]}')
 
                     ylabels.append(f'{evt[2]}\n'
                                    f'{evt[0]} - {evt[1]}')
@@ -128,12 +115,13 @@ def data_analysis(message, date):
             plt.title = f"Schedule for {date}"
             fig = plt.gcf()
             fig.set_size_inches(19.2, 10.8)
-            imagefile = f'{message.chat.id}/data.png'
+            imagefile = f'Schedule/{message.chat.id}.png'
             plt.savefig(imagefile)
             img = open(imagefile, 'rb')
-            bot.send_photo(message.chat.id, img, caption=f"Your schedule for {date.day} - {date.month} - {date.year}")
+            config.bot.send_photo(message.chat.id, img,
+                                  caption=f"Your schedule for {date.day} - {date.month} - {date.year}")
         else:
-            bot.send_message(message.chat.id, "Nothing to analyse so far(")
+            config.bot.send_message(message.chat.id, "Nothing to analyse so far(")
     except FileNotFoundError:
-        open(filename, "w")
+        open(config.filename, "w")
         return data_analysis(message, date)

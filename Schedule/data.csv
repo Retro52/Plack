@@ -1,0 +1,6 @@
+id_client,name_event,event_day,start_time,end_time,re,delta
+559325489,Sleeping,2021-06-07,23:50,08:00,True,86400
+559325489,Breakfast,2021-06-08,10:00,10:30,True,86400
+559325489,Lunch,2021-06-08,15:00,15:30,True,86400
+559325489,Diner,2021-06-08,20:25,20:55,True,86400
+559325489,AM exam Ukraine,2021-06-14,10:00,17:50,False,

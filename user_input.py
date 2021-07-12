@@ -1,11 +1,12 @@
 import datetime
 import time
+import config
 from datetime import time as ch_time
+import timeit
 
 import pandas as pd
 from telebot import types
 
-import Schedule.Scheme
 from config import *
 
 
@@ -49,10 +50,15 @@ def user_time(message, function):
     else:
         try:
             time_dinner = int(text)
-            if time_dinner < 10:
-                time_dinner = "0" + str(time_dinner)
-            time_dinner = str(time_dinner) + ":" + "0" * 2
-            return time_dinner
+            if 0 > time_dinner or time_dinner > 24:
+                markup = default_markup()
+                bot.send_message(message.chat.id, "Wrong input format", reply_markup=markup)
+                error(message, function)
+            else:
+                if time_dinner < 10:
+                    time_dinner = "0" + str(time_dinner)
+                time_dinner = str(time_dinner) + ":" + "0" * 2
+                return time_dinner
         except ValueError:
             markup = default_markup()
             bot.send_message(message.chat.id, "Wrong input format", reply_markup=markup)
@@ -87,28 +93,40 @@ def correct_time(time_dinner):
 
 
 def schedule_per_user():
+    # start = timeit.default_timer()
+
+    # Your statements here
+
+    # stop = timeit.default_timer()
     while True:
-        df = pd.read_csv(Schedule.Scheme.filename)
-        cur_time = datetime.datetime.now()
-        cur_time_1970 = datetime.datetime(year=cur_time.year,
-                                          month=cur_time.month,
-                                          day=cur_time.day,
-                                          hour=cur_time.hour,
-                                          minute=cur_time.minute,
-                                          second=cur_time.second).timestamp()
-        for row in df.itertuples():
-            row_date = str(row.event_day).split("-")
-            row_time = str(row.start_time).split(":")
-            row_1970 = datetime.datetime(year=int(row_date[0]),
-                                         month=int(row_date[1]),
-                                         day=int(row_date[2]),
-                                         hour=int(row_time[0]),
-                                         minute=int(row_time[1]),
-                                         second=0
-                                         ).timestamp()
-            if (abs(int(cur_time_1970 - row_1970)) % row.delta == 0 and row.re is True) or\
-                    (cur_time_1970 == row_1970 and row.re is False):
-                bot_send(row,
-                         f"Time for event <b>{row.name_event}</b>\n"
-                         f"{row.start_time} - {row.end_time}")
-        time.sleep(1)
+        try:
+            df = pd.read_csv(config.filename)
+            start = timeit.default_timer()
+            cur_time = datetime.datetime.now()
+            cur_time_1970 = datetime.datetime(year=cur_time.year,
+                                              month=cur_time.month,
+                                              day=cur_time.day,
+                                              hour=cur_time.hour,
+                                              minute=cur_time.minute,
+                                              second=cur_time.second).timestamp()
+            for row in df.itertuples():
+                row_date = str(row.event_day).split("-")
+                row_time = str(row.start_time).split(":")
+                row_1970 = datetime.datetime(year=int(row_date[0]),
+                                             month=int(row_date[1]),
+                                             day=int(row_date[2]),
+                                             hour=int(row_time[0]),
+                                             minute=int(row_time[1]),
+                                             second=0
+                                             ).timestamp()
+                if (abs(int(cur_time_1970 - row_1970)) % row.delta == 0 and row.re is True) or\
+                        (cur_time_1970 == row_1970 and row.re is False):
+                    bot_send(row,
+                             f"Time for event <b>{row.name_event}</b>\n"
+                             f"{row.start_time} - {row.end_time}")
+            stop = timeit.default_timer()
+            delta = stop - start
+            time.sleep(1 - delta)
+        except Exception as e:
+            print(e)
+            time.sleep(1)
