@@ -2,11 +2,11 @@ from telebot.types import ReplyKeyboardRemove, CallbackQuery
 
 import telebot_calendar
 from Schedule import data
+from config import *
 from telebot_calendar import CallbackData
 from user_input import *
-from config import *
 
-calendar_1 = CallbackData("CustomEventDate", "action", "year", "month", "day")
+calendar_custom = CallbackData("CustomEventDate", "action", "year", "month", "day")
 
 
 class CustomEvent:
@@ -35,7 +35,7 @@ def custom(message):
     markup = telebot_calendar.Calendar()
     markup = telebot_calendar.Calendar.create_calendar(
         self=markup,
-        name=calendar_1.prefix,
+        name=calendar_custom.prefix,
         year=now.year,
         month=now.month,
     )
@@ -46,9 +46,9 @@ def custom(message):
     )
 
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith(calendar_1.prefix))
+@bot.callback_query_handler(func=lambda call: call.data.startswith(calendar_custom.prefix))
 def callback_inline(call: CallbackQuery):
-    name, action, year, month, day = call.data.split(calendar_1.sep)
+    name, action, year, month, day = call.data.split(calendar_custom.sep)
 
     date = telebot_calendar.Calendar()
     date = telebot_calendar.Calendar.calendar_query_handler(self=date,
@@ -63,7 +63,6 @@ def callback_inline(call: CallbackQuery):
             reply_markup=ReplyKeyboardRemove(),
         )
         new_event.day = date.date()
-        # new_event.day = new_event.day.strftime('%m/%d/%Y')
         bot.send_message(
             chat_id=call.from_user.id,
             text=f"Now send event start time (for example '11:00' or just '11')",
